@@ -1,0 +1,31 @@
+1) SELECT 
+    COALESCE(b.brand, 'Без бренда') AS brand_name,
+    SUM(a.qty * a.price) AS total_supply_amount
+FROM actions AS a
+LEFT JOIN products AS p ON a.product_id = p.id
+LEFT JOIN brands AS b ON p.brand_id = b.id
+GROUP BY b.brand;
+
+2) SELECT 
+    s.supplier,
+    c.category,
+    SUM(a.qty * a.price) AS total_supply_amount
+FROM actions AS a
+INNER JOIN products AS p ON a.product_id = p.id
+INNER JOIN categories AS c ON p.category_id = c.id
+INNER JOIN suppliers AS s ON a.supplier_id = s.id
+WHERE EXTRACT(YEAR FROM a.action_date) = 2016
+GROUP BY s.supplier, c.category;
+
+3) SELECT 
+    c.category,
+    EXTRACT(YEAR FROM a.action_date) AS year,
+    AVG(a.price) AS average_price,
+    MAX(a.price) AS max_price,
+    MIN(a.price) AS min_price
+FROM actions AS a
+INNER JOIN products AS p ON a.product_id = p.id
+INNER JOIN categories AS c ON p.category_id = c.id
+GROUP BY c.category, EXTRACT(YEAR FROM a.action_date)
+ORDER BY c.category, year;
+
